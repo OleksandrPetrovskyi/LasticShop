@@ -9,7 +9,7 @@ namespace LasticShop.DatabaseModels
         public int UserId { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }
-        public ICollection<string>? IMG { get; set; }
+        public ICollection<ProductsImages>? IMG { get; set; }
         public ICollection<Review> Reviews { get; set; }
     }
 }
