@@ -1,3 +1,4 @@
+using LasticShop.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LasticShop.Controllers

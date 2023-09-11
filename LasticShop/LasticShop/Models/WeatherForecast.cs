@@ -1,4 +1,4 @@
-namespace LasticShop
+namespace LasticShop.Models
 {
     public class WeatherForecast
     {
