@@ -1,11 +1,18 @@
+using LasticShop;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Connect DbContext
+builder.Services.AddDbContext<ShopEntities>(option =>
+option.UseSqlServer(builder.Configuration.GetConnectionString("MsSql")));
 
 var app = builder.Build();
 
