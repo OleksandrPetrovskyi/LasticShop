@@ -1,4 +1,5 @@
 using LasticShop;
+using LasticShop.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,9 @@ builder.Services.AddSwaggerGen();
 // Connect DbContext
 builder.Services.AddDbContext<ShopEntities>(option =>
 option.UseSqlServer(builder.Configuration.GetConnectionString("MsSql")));
+
+// Add repositories
+builder.Services.AddScoped<ProductRepository>();
 
 var app = builder.Build();
 
