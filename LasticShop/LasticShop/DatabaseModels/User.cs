@@ -12,5 +12,6 @@
         public DateTime Created { get; set; }
         public DateTime DateOfBirth { get; set; }
         public ICollection<Review> Reviews { get; set; }
+        public ICollection<Product> Products { get; set; }
     }
 }

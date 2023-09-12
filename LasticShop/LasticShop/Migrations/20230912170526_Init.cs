@@ -12,21 +12,6 @@ namespace LasticShop.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatorID = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -47,7 +32,29 @@ namespace LasticShop.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductsImages",
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatorID = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_Users_CreatorID",
+                        column: x => x.CreatorID,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PrImages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -57,9 +64,9 @@ namespace LasticShop.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductsImages", x => x.Id);
+                    table.PrimaryKey("PK_PrImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductsImages_Products_ProductId",
+                        name: "FK_PrImages_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -72,11 +79,11 @@ namespace LasticShop.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Positive = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Negative = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Positive = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Negative = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rated = table.Column<short>(type: "smallint", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -94,13 +101,18 @@ namespace LasticShop.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductsImages_ProductId",
-                table: "ProductsImages",
+                name: "IX_PrImages_ProductId",
+                table: "PrImages",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CreatorID",
+                table: "Products",
+                column: "CreatorID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_ProductId",
@@ -117,7 +129,7 @@ namespace LasticShop.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ProductsImages");
+                name: "PrImages");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

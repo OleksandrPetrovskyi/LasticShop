@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LasticShop.Migrations
 {
     [DbContext(typeof(ShopEntities))]
-    [Migration("20230911181503_Init")]
+    [Migration("20230912170526_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -40,11 +40,16 @@ namespace LasticShop.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("CreatorID");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Products");
                 });
@@ -68,7 +73,7 @@ namespace LasticShop.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductsImages");
+                    b.ToTable("PrImages");
                 });
 
             modelBuilder.Entity("LasticShop.DatabaseModels.Review", b =>
@@ -87,11 +92,9 @@ namespace LasticShop.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Negative")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Positive")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProductId")
@@ -155,6 +158,17 @@ namespace LasticShop.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("LasticShop.DatabaseModels.Product", b =>
+                {
+                    b.HasOne("LasticShop.DatabaseModels.User", "User")
+                        .WithMany("Products")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LasticShop.DatabaseModels.ProductsImages", b =>
                 {
                     b.HasOne("LasticShop.DatabaseModels.Product", "Product")
@@ -168,17 +182,21 @@ namespace LasticShop.Migrations
 
             modelBuilder.Entity("LasticShop.DatabaseModels.Review", b =>
                 {
-                    b.HasOne("LasticShop.DatabaseModels.Product", null)
+                    b.HasOne("LasticShop.DatabaseModels.Product", "Product")
                         .WithMany("Reviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LasticShop.DatabaseModels.User", null)
+                    b.HasOne("LasticShop.DatabaseModels.User", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LasticShop.DatabaseModels.Product", b =>
@@ -190,6 +208,8 @@ namespace LasticShop.Migrations
 
             modelBuilder.Entity("LasticShop.DatabaseModels.User", b =>
                 {
+                    b.Navigation("Products");
+
                     b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
