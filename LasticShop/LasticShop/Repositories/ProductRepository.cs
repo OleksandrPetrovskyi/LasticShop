@@ -13,9 +13,11 @@ namespace LasticShop.Repositories
             _context = context;
         }
 
-        public async Task<List<Product>> GetProducts(int count)
-        {            
-            return await _context.Products.Skip(count).Take(20).ToListAsync<Product>();
+        public async Task<List<Product>> GetProducts(int page)
+        {
+            var startElements = page * 20;
+
+            return await _context.Products.Skip(page).Take(startElements).ToListAsync<Product>();
         }
 
         public async Task<Product> GetProductById(int id)
@@ -42,7 +44,20 @@ namespace LasticShop.Repositories
             return product.Id;
         }
 
-        public async Task<Product> DeleteProduct(int id)
+        public async Task<List<Review>> AddReview(int productId, Review review)
+        {
+            var product = await GetProductById(productId);
+
+            if (product == null)
+                return null;
+
+            product.Reviews.Add(review);
+            await _context.SaveChangesAsync();
+
+            return product.Reviews.ToList();
+        }
+
+        public async Task<int> DeleteProduct(int id)
         {
             var product = await GetProductById(id);
 
@@ -53,7 +68,7 @@ namespace LasticShop.Repositories
 
             await _context.SaveChangesAsync();
 
-            return product;
+            return product.Id;
         }
 
     }

@@ -17,9 +17,9 @@ namespace LasticShop.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts(int count = 0)
+        public async Task<IActionResult> GetProducts(int page = 0)
         {
-            var products = await _productRepository.GetProducts(count);
+            var products = await _productRepository.GetProducts(page);
 
             if (products == null)
                 return NotFound();
@@ -38,7 +38,6 @@ namespace LasticShop.Controllers
             return Ok(product);
         }
 
-        //[HttpPost("{product: Product}")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct(Product product)
         {
@@ -49,15 +48,10 @@ namespace LasticShop.Controllers
 
             return Ok(newProductId);
         }
-
+        
         [HttpPut]
         public async Task<IActionResult> UpdateProduct(Product product)
         {
-            var productId = _productRepository.GetProductById(product.Id);
-
-            if(productId == null)
-                return NotFound();
-
             try
             {
                 _productRepository.UpdateProduct(product);
@@ -70,15 +64,31 @@ namespace LasticShop.Controllers
             return Ok(product.Id);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddReview(int productId, Review review)
+        {
+            var reviews = _productRepository.AddReview(productId, review);
+
+            if (reviews == null)
+                return NotFound("The product was not find");
+
+            return Ok(reviews);
+        }
+
         [HttpDelete ("{id:int}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = _productRepository.DeleteProduct(id);
+            var productId = 0;
+            try
+            {
+                productId = await _productRepository.DeleteProduct(id);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
-            if (product == null)
-                return NotFound();
-
-            return Ok(product);
+            return Ok(productId);
         }
     }
 }
